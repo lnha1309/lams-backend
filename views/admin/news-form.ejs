@@ -1,0 +1,307 @@
+<style>
+    .image-preview {
+        width: 100%;
+        max-width: 360px;
+        border-radius: 8px;
+    }
+
+    @media (max-width: 767.98px) {
+        .image-preview {
+            max-width: 100%;
+        }
+    }
+</style>
+
+<div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between mb-3 gap-2">
+    <h4 class="m-0">
+        <%= title %>
+    </h4>
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-secondary btn-sm" href="/admin/news">
+            <i class="bi bi-arrow-left me-1"></i><span class="d-none d-sm-inline">Back</span>
+        </a>
+        <button type="submit" form="newsForm" class="btn btn-primary btn-sm">
+            <i class="bi bi-save me-1"></i>Save
+        </button>
+    </div>
+</div>
+
+<form id="newsForm">
+    <div class="row g-3">
+        <!-- Main Content Column -->
+        <div class="col-12 col-lg-8 order-2 order-lg-1">
+            <div class="card mb-3">
+                <div class="card-header"><i class="bi bi-file-text me-2"></i>Basic Information</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Title <span class="text-danger">*</span></label>
+                        <input class="form-control" name="title" required value="<%= item ? item.title : '' %>">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Teaser <small class="text-muted">(max 300 chars)</small></label>
+                        <textarea class="form-control" name="teaser" maxlength="300" required
+                            rows="3"><%= item ? item.teaser : '' %></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Content</label>
+                        <textarea class="form-control" name="content" rows="12"
+                            required><%= item ? item.content : '' %></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header"><i class="bi bi-search me-2"></i>SEO Settings</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Meta Title</label>
+                                <input class="form-control" name="seo.metaTitle"
+                                    value="<%= item?.seo?.metaTitle || '' %>">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Meta Keywords</label>
+                                <input class="form-control" name="seo.metaKeywords"
+                                    value="<%= item?.seo?.metaKeywords || '' %>">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Meta Description</label>
+                        <textarea class="form-control" name="seo.metaDescription"
+                            rows="2"><%= item?.seo?.metaDescription || '' %></textarea>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">OG Image</label>
+                        <div class="row g-2">
+                            <div class="col-12 col-sm-8">
+                                <input class="form-control" type="file" id="ogFile" accept="image/*">
+                            </div>
+                            <div class="col-12 col-sm-4">
+                                <button type="button" class="btn btn-outline-primary w-100" onclick="uploadOg()">
+                                    <i class="bi bi-upload me-1"></i>Upload
+                                </button>
+                            </div>
+                        </div>
+                        <input class="form-control mt-2" id="ogImageInput" name="seo.ogImage"
+                            value="<%= item?.seo?.ogImage || '' %>" placeholder="/uploads/...">
+                        <% if (item?.seo?.ogImage) { %>
+                            <div class="mt-2">
+                                <img id="ogPreview" class="image-preview" src="<%= item.seo.ogImage %>">
+                            </div>
+                            <% } else { %>
+                                <div class="mt-2">
+                                    <img id="ogPreview" class="image-preview" src="" style="display:none;">
+                                </div>
+                                <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Column -->
+        <div class="col-12 col-lg-4 order-1 order-lg-2">
+            <div class="card mb-3">
+                <div class="card-header"><i class="bi bi-image me-2"></i>Featured Image</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="row g-2 mb-2">
+                            <div class="col-8">
+                                <input class="form-control form-control-sm" type="file" id="featuredFile"
+                                    accept="image/*">
+                            </div>
+                            <div class="col-4">
+                                <button type="button" class="btn btn-outline-primary btn-sm w-100"
+                                    onclick="uploadFeaturedImage()">
+                                    <i class="bi bi-upload"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <input class="form-control form-control-sm" id="featuredImageInput" name="featuredImage"
+                            required value="<%= item ? item.featuredImage : '' %>" placeholder="/uploads/...">
+                        <div class="mt-2 text-center">
+                            <% if (item?.featuredImage) { %>
+                                <img id="featuredPreview" class="image-preview" src="<%= item.featuredImage %>">
+                                <% } else { %>
+                                    <img id="featuredPreview" class="image-preview" src="" style="display:none;">
+                                    <div id="noImagePlaceholder" class="border rounded p-4 text-muted">
+                                        <i class="bi bi-image fs-1"></i><br>
+                                        <small>No image</small>
+                                    </div>
+                                    <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header"><i class="bi bi-gear me-2"></i>Settings</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label class="form-label small">Category</label>
+                                <select class="form-select form-select-sm" name="category">
+                                    <% const cat=item ? item.category : 'news' ; %>
+                                        <option value="news" <%=cat==='news' ? 'selected' : '' %>>News</option>
+                                        <option value="event" <%=cat==='event' ? 'selected' : '' %>>Event</option>
+                                        <option value="story" <%=cat==='story' ? 'selected' : '' %>>Story</option>
+                                        <option value="announcement" <%=cat==='announcement' ? 'selected' : '' %>
+                                            >Announcement</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                <label class="form-label small">Status</label>
+                                <% const st=item ? item.status : 'draft' ; %>
+                                    <select class="form-select form-select-sm" name="status">
+                                        <option value="draft" <%=st==='draft' ? 'selected' : '' %>>Draft</option>
+                                        <option value="published" <%=st==='published' ? 'selected' : '' %>>Published
+                                        </option>
+                                        <option value="archived" <%=st==='archived' ? 'selected' : '' %>>Archived
+                                        </option>
+                                    </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small">Publish Date</label>
+                        <input type="date" class="form-control form-control-sm" name="publishDate"
+                            value="<%= item && item.publishDate ? item.publishDate.toISOString().slice(0,10) : '' %>">
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="featured" name="featured" <%=item &&
+                            item.featured ? 'checked' : '' %>>
+                        <label class="form-check-label small" for="featured">
+                            <i class="bi bi-star me-1"></i>Featured on Homepage
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Save Button -->
+            <div class="d-lg-none d-grid gap-2 mb-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save me-1"></i>Save News
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="mt-3" id="msg"></div>
+
+<script>
+    const itemId = "<%= item ? item._id : '' %>";
+
+    function formToJson(form) {
+        const fd = new FormData(form);
+        const obj = {};
+        for (const [k, v] of fd.entries()) {
+            if (k === 'featured') continue;
+            if (k.includes('.')) {
+                const [a, b] = k.split('.');
+                obj[a] = obj[a] || {};
+                obj[a][b] = v;
+            } else {
+                obj[k] = v;
+            }
+        }
+        obj.featured = document.getElementById('featured').checked;
+        if (obj.publishDate) obj.publishDate = new Date(obj.publishDate).toISOString();
+        return obj;
+    }
+
+    document.getElementById('newsForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        saveNews();
+    });
+
+    async function saveNews() {
+        const msg = document.getElementById('msg');
+        msg.innerHTML = '';
+
+        const payload = formToJson(document.getElementById('newsForm'));
+
+        const url = itemId ? `/admin/news/update/${itemId}` : `/admin/news/create`;
+        const method = itemId ? 'PUT' : 'POST';
+
+        const res = await fetch(url, {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (!data.success) {
+            msg.innerHTML = `<div class="alert alert-danger">${data.message || 'Save failed'}</div>`;
+            return;
+        }
+
+        msg.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+        setTimeout(() => location.href = '/admin/news', 600);
+    }
+
+    async function uploadFeaturedImage() {
+        const fileInput = document.getElementById('featuredFile');
+        const input = document.getElementById('featuredImageInput');
+        const preview = document.getElementById('featuredPreview');
+        const placeholder = document.getElementById('noImagePlaceholder');
+
+        if (!fileInput.files || fileInput.files.length === 0) {
+            alert('Please choose an image first');
+            return;
+        }
+
+        const fd = new FormData();
+        fd.append('image', fileInput.files[0]);
+
+        const res = await fetch('/upload/image', { method: 'POST', body: fd });
+        const data = await res.json();
+
+        if (!data.success) {
+            alert(data.message || 'Upload failed');
+            return;
+        }
+
+        input.value = data.url;
+        preview.src = data.url;
+        preview.style.display = 'block';
+        if (placeholder) placeholder.style.display = 'none';
+    }
+
+    async function uploadOg() {
+        const fileInput = document.getElementById('ogFile');
+        const input = document.getElementById('ogImageInput');
+        const preview = document.getElementById('ogPreview');
+
+        if (!fileInput.files || fileInput.files.length === 0) {
+            alert('Please choose an image first');
+            return;
+        }
+
+        const fd = new FormData();
+        fd.append('image', fileInput.files[0]);
+
+        const res = await fetch('/upload/image', { method: 'POST', body: fd });
+        const data = await res.json();
+
+        if (!data.success) {
+            alert(data.message || 'Upload failed');
+            return;
+        }
+
+        input.value = data.url;
+        preview.src = data.url;
+        preview.style.display = 'block';
+    }
+</script>

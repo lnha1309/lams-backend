@@ -1,0 +1,139 @@
+<div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between mb-3 gap-2">
+  <h4 class="m-0">News & Events</h4>
+  <a class="btn btn-primary btn-sm" href="/admin/news/create">
+    <i class="bi bi-plus me-1"></i>Create New
+  </a>
+</div>
+
+<% if (!news || news.length===0) { %>
+  <div class="alert alert-warning">No news yet.</div>
+  <% } else { %>
+    <!-- Desktop Table View -->
+    <div class="d-none d-lg-block">
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle">
+          <thead class="table-light">
+            <tr>
+              <th style="width:100px;">Image</th>
+              <th>Title</th>
+              <th style="width:110px;">Category</th>
+              <th style="width:100px;">Status</th>
+              <th style="width:70px;">Views</th>
+              <th style="width:100px;">Date</th>
+              <th style="width:130px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% news.forEach(item=> {
+              const dateStr = item.publishDate
+              ? item.publishDate.toISOString().slice(0,10)
+              : (item.createdAt ? item.createdAt.toISOString().slice(0,10) : '');
+              %>
+              <tr>
+                <td>
+                  <img src="<%= item.featuredImage || '/img/no-image.png' %>" alt="thumb"
+                    style="width:70px; height:50px; object-fit:cover; border-radius:6px;">
+                </td>
+                <td>
+                  <%= item.title %>
+                </td>
+                <td>
+                  <span class="badge bg-info text-dark text-uppercase small">
+                    <%= item.category %>
+                  </span>
+                </td>
+                <td>
+                  <% if (item.status==='published' ) { %>
+                    <span class="badge bg-success">published</span>
+                    <% } else if (item.status==='draft' ) { %>
+                      <span class="badge bg-warning text-dark">draft</span>
+                      <% } else { %>
+                        <span class="badge bg-secondary">archived</span>
+                        <% } %>
+                </td>
+                <td>
+                  <%= item.views || 0 %>
+                </td>
+                <td><small>
+                    <%= dateStr %>
+                  </small></td>
+                <td>
+                  <div class="btn-group btn-group-sm">
+                    <a class="btn btn-warning" href="/admin/news/edit/<%= item._id %>">Edit</a>
+                    <button class="btn btn-danger" onclick="deleteNews('<%= item._id %>')">Delete</button>
+                  </div>
+                </td>
+              </tr>
+              <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Mobile Card View -->
+    <div class="d-lg-none">
+      <% news.forEach(item=> {
+        const dateStr = item.publishDate
+        ? item.publishDate.toISOString().slice(0,10)
+        : (item.createdAt ? item.createdAt.toISOString().slice(0,10) : '');
+        %>
+        <div class="card mb-3">
+          <div class="row g-0">
+            <div class="col-4">
+              <img src="<%= item.featuredImage || '/img/no-image.png' %>" class="img-fluid rounded-start h-100"
+                style="object-fit:cover;" alt="thumb">
+            </div>
+            <div class="col-8">
+              <div class="card-body py-2 px-3">
+                <h6 class="card-title mb-1 text-truncate">
+                  <%= item.title %>
+                </h6>
+                <div class="d-flex flex-wrap gap-1 mb-2">
+                  <span class="badge bg-info text-dark small">
+                    <%= item.category %>
+                  </span>
+                  <% if (item.status==='published' ) { %>
+                    <span class="badge bg-success small">published</span>
+                    <% } else if (item.status==='draft' ) { %>
+                      <span class="badge bg-warning text-dark small">draft</span>
+                      <% } else { %>
+                        <span class="badge bg-secondary small">archived</span>
+                        <% } %>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <small class="text-muted">
+                    <i class="bi bi-eye me-1"></i>
+                    <%= item.views || 0 %>
+                      <span class="mx-1">•</span>
+                      <%= dateStr %>
+                  </small>
+                  <div class="btn-group btn-group-sm">
+                    <a class="btn btn-outline-warning btn-sm" href="/admin/news/edit/<%= item._id %>">
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                    <button class="btn btn-outline-danger btn-sm" onclick="deleteNews('<%= item._id %>')">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% }) %>
+    </div>
+    <% } %>
+
+      <script>
+        async function deleteNews(id) {
+          if (!confirm('Delete this news?')) return;
+
+          const res = await fetch(`/admin/news/delete/${id}`, { method: 'DELETE' });
+          const data = await res.json();
+          if (data.success) {
+            location.reload();
+          } else {
+            alert(data.message || 'Delete failed');
+          }
+        }
+      </script>

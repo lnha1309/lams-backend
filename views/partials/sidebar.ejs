@@ -1,0 +1,41 @@
+<aside id="sidebar" class="border-end bg-white">
+  <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+    <strong><i class="bi bi-mortarboard me-2"></i>LAMS CMS</strong>
+    <button class="btn btn-sm btn-outline-secondary d-lg-none" onclick="toggleSidebar()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <div class="p-2">
+    <div class="list-group list-group-flush">
+      <a class="list-group-item list-group-item-action <%= typeof activePage !== 'undefined' && activePage === 'dashboard' ? 'active' : '' %>"
+        href="/admin">
+        <i class="bi bi-speedometer2 me-2"></i>Dashboard
+      </a>
+      <a class="list-group-item list-group-item-action <%= typeof activePage !== 'undefined' && activePage === 'homepage' ? 'active' : '' %>"
+        href="/admin/homepage">
+        <i class="bi bi-house-door me-2"></i>Homepage
+      </a>
+      <a class="list-group-item list-group-item-action <%= typeof activePage !== 'undefined' && activePage === 'about' ? 'active' : '' %>"
+        href="/admin/about">
+        <i class="bi bi-info-circle me-2"></i>About Us
+      </a>
+      <a class="list-group-item list-group-item-action <%= typeof activePage !== 'undefined' && activePage === 'news' ? 'active' : '' %>"
+        href="/admin/news">
+        <i class="bi bi-newspaper me-2"></i>News & Events
+      </a>
+      <a class="list-group-item list-group-item-action <%= typeof activePage !== 'undefined' && activePage === 'contact' ? 'active' : '' %>"
+        href="/admin/contact">
+        <i class="bi bi-envelope me-2"></i>Contact
+      </a>
+    </div>
+  </div>
+
+  <!-- Bottom section -->
+  <div class="mt-auto p-3 border-top position-absolute bottom-0 w-100 bg-white">
+    <small class="text-muted d-block">
+      <i class="bi bi-info-circle me-1"></i>
+      LAMS CMS v1.0.0
+    </small>
+  </div>
+</aside>

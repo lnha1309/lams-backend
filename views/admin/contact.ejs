@@ -1,0 +1,302 @@
+<!-- Page Header -->
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+  <div class="d-flex align-items-center gap-2">
+    <h5 class="mb-0">Contact Management</h5>
+    <span class="badge bg-<%= contact.status === 'published' ? 'success' : 'warning' %>">
+      <%= contact.status %>
+    </span>
+  </div>
+  <div class="d-flex gap-2">
+    <button class="btn btn-primary btn-sm" type="button" onclick="saveContact()">
+      <i class="bi bi-save me-1"></i><span class="d-none d-sm-inline">Save</span>
+    </button>
+    <button class="btn btn-success btn-sm" type="button" onclick="publishContact()">
+      <i class="bi bi-globe me-1"></i><span class="d-none d-sm-inline">Publish</span>
+    </button>
+  </div>
+</div>
+
+<form id="contactForm">
+  <!-- Nav Tabs -->
+  <ul class="nav nav-tabs mb-3" role="tablist">
+    <li class="nav-item">
+      <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#mainCampusTab" type="button">Main
+        Campus</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#officesTab" type="button">Offices</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#socialTab" type="button">Social</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#formSettingsTab" type="button">Form
+        Settings</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#hoursTab" type="button">Hours</button>
+    </li>
+  </ul>
+
+  <!-- Tab Content -->
+  <div class="tab-content">
+    <!-- Main Campus -->
+    <div class="tab-pane fade show active" id="mainCampusTab">
+      <div class="card">
+        <div class="card-header d-flex align-items-center gap-2">
+          <i class="bi bi-building"></i><span>Main Campus</span>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <div class="mb-3">
+                <label class="form-label small">Address <span class="text-danger">*</span></label>
+                <textarea class="form-control form-control-sm" id="mainAddress" rows="3"
+                  required><%= contact.mainCampus?.address || '' %></textarea>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small">Phone</label>
+                <input type="text" class="form-control form-control-sm" id="mainPhone"
+                  value="<%= contact.mainCampus?.phone || '' %>">
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="mb-3">
+                <label class="form-label small">Email</label>
+                <input type="email" class="form-control form-control-sm" id="mainEmail"
+                  value="<%= contact.mainCampus?.email || '' %>">
+              </div>
+              <div class="mb-3">
+                <label class="form-label small">Google Maps Embed URL</label>
+                <input type="text" class="form-control form-control-sm" id="mainMapUrl"
+                  value="<%= contact.mainCampus?.mapUrl || '' %>" placeholder="https://www.google.com/maps/embed?...">
+              </div>
+            </div>
+          </div>
+          <% if (contact.mainCampus?.mapUrl) { %>
+            <div class="mt-3">
+              <label class="form-label small">Map Preview</label>
+              <div class="ratio ratio-16x9" style="max-height: 200px;">
+                <iframe src="<%= contact.mainCampus.mapUrl %>" style="border:0;" allowfullscreen=""
+                  loading="lazy"></iframe>
+              </div>
+            </div>
+            <% } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Offices -->
+    <div class="tab-pane fade" id="officesTab">
+      <div class="card">
+        <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+          <span><i class="bi bi-geo-alt me-2"></i>Additional Offices</span>
+          <button type="button" class="btn btn-outline-primary btn-sm" onclick="addOffice()">
+            <i class="bi bi-plus"></i> Add
+          </button>
+        </div>
+        <div class="card-body">
+          <div id="officesContainer" class="row g-3">
+            <% if (contact.additionalOffices && contact.additionalOffices.length> 0) { %>
+              <% contact.additionalOffices.forEach((office, idx)=> { %>
+                <div class="col-12 col-md-6 col-lg-4 office-row">
+                  <div class="card h-100">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-start mb-2">
+                        <input type="text" class="form-control form-control-sm office-name"
+                          value="<%= office.name || '' %>" placeholder="Office Name">
+                        <button type="button" class="btn btn-outline-danger btn-sm ms-2" onclick="removeOffice(this)">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </div>
+                      <div class="mb-2">
+                        <input type="text" class="form-control form-control-sm office-address"
+                          value="<%= office.address || '' %>" placeholder="Address">
+                      </div>
+                      <div class="row g-2">
+                        <div class="col-6">
+                          <input type="text" class="form-control form-control-sm office-phone"
+                            value="<%= office.phone || '' %>" placeholder="Phone">
+                        </div>
+                        <div class="col-6">
+                          <input type="email" class="form-control form-control-sm office-email"
+                            value="<%= office.email || '' %>" placeholder="Email">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <% }); %>
+                  <% } else { %>
+                    <div class="col-12 no-offices-msg">
+                      <p class="text-muted small mb-0">No additional offices. Click "Add" to create one.</p>
+                    </div>
+                    <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Social Links -->
+    <div class="tab-pane fade" id="socialTab">
+      <div class="card">
+        <div class="card-header d-flex align-items-center gap-2">
+          <i class="bi bi-share"></i><span>Social Media Links</span>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-6 col-lg-4">
+              <label class="form-label small"><i class="bi bi-facebook me-1"></i>Facebook</label>
+              <input type="url" class="form-control form-control-sm" id="socialFacebook"
+                value="<%= contact.socialLinks?.facebook || '' %>">
+            </div>
+            <div class="col-6 col-lg-4">
+              <label class="form-label small"><i class="bi bi-twitter-x me-1"></i>Twitter/X</label>
+              <input type="url" class="form-control form-control-sm" id="socialTwitter"
+                value="<%= contact.socialLinks?.twitter || '' %>">
+            </div>
+            <div class="col-6 col-lg-4">
+              <label class="form-label small"><i class="bi bi-linkedin me-1"></i>LinkedIn</label>
+              <input type="url" class="form-control form-control-sm" id="socialLinkedin"
+                value="<%= contact.socialLinks?.linkedin || '' %>">
+            </div>
+            <div class="col-6 col-lg-4">
+              <label class="form-label small"><i class="bi bi-instagram me-1"></i>Instagram</label>
+              <input type="url" class="form-control form-control-sm" id="socialInstagram"
+                value="<%= contact.socialLinks?.instagram || '' %>">
+            </div>
+            <div class="col-6 col-lg-4">
+              <label class="form-label small"><i class="bi bi-youtube me-1"></i>YouTube</label>
+              <input type="url" class="form-control form-control-sm" id="socialYoutube"
+                value="<%= contact.socialLinks?.youtube || '' %>">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Form Settings -->
+    <div class="tab-pane fade" id="formSettingsTab">
+      <div class="card">
+        <div class="card-header d-flex align-items-center gap-2">
+          <i class="bi bi-envelope"></i><span>Contact Form Settings</span>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="formEnabled" <%=contact.contactForm?.enabled
+                  ? 'checked' : '' %>>
+                <label class="form-check-label small" for="formEnabled">Enable Contact Form</label>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small">Recipient Email</label>
+                <input type="email" class="form-control form-control-sm" id="recipientEmail"
+                  value="<%= contact.contactForm?.recipientEmail || '' %>" placeholder="admin@lams.edu">
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="autoReplyEnabled"
+                  <%=contact.contactForm?.autoReplyEnabled ? 'checked' : '' %>>
+                <label class="form-check-label small" for="autoReplyEnabled">Enable Auto Reply</label>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small">Auto Reply Message</label>
+                <textarea class="form-control form-control-sm" id="autoReplyMessage"
+                  rows="3"><%= contact.contactForm?.autoReplyMessage || '' %></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Business Hours -->
+    <div class="tab-pane fade" id="hoursTab">
+      <div class="card">
+        <div class="card-header d-flex align-items-center gap-2">
+          <i class="bi bi-clock"></i><span>Business Hours</span>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-6">
+              <label class="form-label small">Weekdays (Mon-Fri)</label>
+              <input type="text" class="form-control form-control-sm" id="hoursWeekdays"
+                value="<%= contact.businessHours?.weekdays || '' %>" placeholder="9:00 AM - 6:00 PM">
+            </div>
+            <div class="col-6">
+              <label class="form-label small">Weekends (Sat-Sun)</label>
+              <input type="text" class="form-control form-control-sm" id="hoursWeekends"
+                value="<%= contact.businessHours?.weekends || '' %>" placeholder="Closed">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<script>
+  function collectContactData() {
+    const additionalOffices = [];
+    document.querySelectorAll('.office-row').forEach(row => {
+      const name = row.querySelector('.office-name').value.trim();
+      const address = row.querySelector('.office-address').value.trim();
+      const phone = row.querySelector('.office-phone').value.trim();
+      const email = row.querySelector('.office-email').value.trim();
+      if (name || address) additionalOffices.push({ name, address, phone, email });
+    });
+
+    return {
+      mainCampus: { address: $('#mainAddress').val(), phone: $('#mainPhone').val(), email: $('#mainEmail').val(), mapUrl: $('#mainMapUrl').val() },
+      additionalOffices: additionalOffices,
+      socialLinks: { facebook: $('#socialFacebook').val(), twitter: $('#socialTwitter').val(), linkedin: $('#socialLinkedin').val(), instagram: $('#socialInstagram').val(), youtube: $('#socialYoutube').val() },
+      contactForm: { enabled: $('#formEnabled').is(':checked'), recipientEmail: $('#recipientEmail').val(), autoReplyEnabled: $('#autoReplyEnabled').is(':checked'), autoReplyMessage: $('#autoReplyMessage').val() },
+      businessHours: { weekdays: $('#hoursWeekdays').val(), weekends: $('#hoursWeekends').val() }
+    };
+  }
+
+  function saveContact() {
+    const data = collectContactData();
+    if (!data.mainCampus.address.trim()) { alert('Main campus address is required'); return; }
+
+    $.ajax({
+      url: '/admin/contact/update', method: 'POST', contentType: 'application/json',
+      data: JSON.stringify(data),
+      success: (resp) => { alert(resp.message || 'Saved!'); location.reload(); },
+      error: (xhr) => alert(xhr.responseJSON?.message || 'Save failed')
+    });
+  }
+
+  function publishContact() {
+    $.post('/admin/contact/publish')
+      .done((resp) => { alert(resp.message || 'Published!'); location.reload(); })
+      .fail((xhr) => alert(xhr.responseJSON?.message || 'Publish failed'));
+  }
+
+  function addOffice() {
+    $('.no-offices-msg').remove();
+    const html = `
+    <div class="col-12 col-md-6 col-lg-4 office-row">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <input type="text" class="form-control form-control-sm office-name" placeholder="Office Name">
+            <button type="button" class="btn btn-outline-danger btn-sm ms-2" onclick="removeOffice(this)"><i class="bi bi-trash"></i></button>
+          </div>
+          <div class="mb-2">
+            <input type="text" class="form-control form-control-sm office-address" placeholder="Address">
+          </div>
+          <div class="row g-2">
+            <div class="col-6"><input type="text" class="form-control form-control-sm office-phone" placeholder="Phone"></div>
+            <div class="col-6"><input type="email" class="form-control form-control-sm office-email" placeholder="Email"></div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+    $('#officesContainer').append(html);
+  }
+
+  function removeOffice(btn) { $(btn).closest('.office-row').remove(); }
+</script>

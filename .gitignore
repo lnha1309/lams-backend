@@ -1,0 +1,38 @@
+# dependencies
+node_modules/
+
+# env
+.env
+.env.*
+!.env.example
+
+# logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# build / cache (nếu có)
+dist/
+build/
+.tmp/
+.cache/
+
+# uploads (không nên đẩy ảnh demo lên, trừ khi bạn muốn)
+public/uploads/
+
+# coverage
+coverage/
+
+# runtime
+*.pid
+*.seed
+*.pid.lock

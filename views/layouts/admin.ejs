@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>
+    <%= title || 'LAMS CMS' %>
+  </title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+
+  <style>
+    /* Sidebar Styles */
+    #sidebar {
+      width: 260px;
+      min-height: 100vh;
+      transition: all 0.3s ease;
+    }
+
+    #sidebar.collapsed {
+      margin-left: -260px;
+    }
+
+    /* Main content */
+    #mainContent {
+      transition: all 0.3s ease;
+    }
+
+    /* Overlay for mobile */
+    #sidebarOverlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+
+    #sidebarOverlay.active {
+      display: block;
+    }
+
+    /* Mobile styles */
+    @media (max-width: 991.98px) {
+      #sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 1000;
+        margin-left: -260px;
+      }
+
+      #sidebar.show {
+        margin-left: 0;
+      }
+
+      .sidebar-toggle {
+        display: inline-block !important;
+      }
+
+      /* Responsive tables */
+      .table-responsive-stack tr {
+        display: flex;
+        flex-wrap: wrap;
+        border-bottom: 1px solid #dee2e6;
+        padding: 0.5rem 0;
+      }
+
+      .table-responsive-stack td,
+      .table-responsive-stack th {
+        flex: 1 1 50%;
+        border: none;
+        padding: 0.25rem 0.5rem;
+      }
+
+      /* Tab navigation scroll */
+      .nav-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      .nav-tabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      .nav-tabs .nav-link {
+        white-space: nowrap;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+      }
+
+      /* Card adjustments */
+      .card-body .row>[class*="col-md"] {
+        margin-bottom: 0.5rem;
+      }
+
+      /* Dynamic rows responsive */
+      .cta-row,
+      .feature-row,
+      .step-row,
+      .cat-feat-row,
+      .office-row,
+      .about-feature-row {
+        margin-bottom: 1rem;
+      }
+
+      .cta-row .row>div,
+      .step-row>div,
+      .cat-feat-row>div {
+        margin-bottom: 0.5rem;
+      }
+
+      /* Page header responsive */
+      h3,
+      h4 {
+        font-size: 1.25rem;
+      }
+    }
+
+    /* Small mobile */
+    @media (max-width: 575.98px) {
+      .nav-tabs .nav-link {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+      }
+
+      .card-header {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+      }
+
+      .card-body {
+        padding: 0.75rem;
+      }
+
+      .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+      }
+    }
+
+    /* Desktop styles */
+    @media (min-width: 992px) {
+      .sidebar-toggle {
+        display: none !important;
+      }
+
+      #sidebar.collapsed {
+        margin-left: -260px;
+      }
+
+      #mainContent.expanded {
+        margin-left: 0;
+      }
+    }
+
+    /* Utility classes */
+    .cursor-pointer {
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Sidebar Overlay (mobile) -->
+  <div id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+  <div class="d-flex">
+    <%- include('../partials/sidebar') %>
+
+      <div id="mainContent" class="flex-grow-1 d-flex flex-column min-vh-100">
+        <%- include('../partials/header') %>
+
+          <main class="container-fluid py-3 flex-grow-1">
+            <%- body %>
+          </main>
+
+          <%- include('../partials/footer') %>
+      </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      const mainContent = document.getElementById('mainContent');
+
+      if (window.innerWidth < 992) {
+        // Mobile: slide in/out
+        sidebar.classList.toggle('show');
+        overlay.classList.toggle('active');
+      } else {
+        // Desktop: collapse/expand
+        sidebar.classList.toggle('collapsed');
+        mainContent.classList.toggle('expanded');
+      }
+    }
+
+    // Close sidebar on window resize if needed
+    window.addEventListener('resize', function () {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+
+      if (window.innerWidth >= 992) {
+        sidebar.classList.remove('show');
+        overlay.classList.remove('active');
+      }
+    });
+  </script>
+
+  <!-- Global Image Upload Handler -->
+  <input type="file" id="globalImageUploadInput" style="display:none" accept="image/*">
+  <script>
+    // Global upload target variable
+    window.currentUploadTarget = null;
+
+    // Global upload function that can be called from any page
+    window.uploadImage = function (targetInputId) {
+      window.currentUploadTarget = targetInputId;
+      document.getElementById('globalImageUploadInput').click();
+    };
+
+    // Register event handler after jQuery is loaded
+    $(function () {
+      $('#globalImageUploadInput').on('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('image', file);
+        const targetId = window.currentUploadTarget;
+
+        $.ajax({
+          url: '/upload/image',
+          method: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function (resp) {
+            if (resp.success && resp.url) {
+              // Update the input field with the URL
+              $('#' + targetId).val(resp.url);
+
+              // Update preview if exists (convention: inputId + '_preview')
+              const previewEl = document.getElementById(targetId + '_preview');
+              if (previewEl) {
+                previewEl.innerHTML = '<img src="' + resp.url + '" class="img-fluid rounded" style="max-height: 110px;">';
+              }
+
+              alert('Upload thành công!');
+            } else {
+              alert('Upload failed: ' + (resp.message || 'Unknown error'));
+            }
+          },
+          error: function (xhr) {
+            alert(xhr.responseJSON?.message || 'Upload failed');
+          }
+        });
+        this.value = ''; // Reset file input
+      });
+    });
+  </script>
+</body>
+
+</html>

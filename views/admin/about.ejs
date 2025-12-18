@@ -1,0 +1,727 @@
+<!-- Page Header -->
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+  <div class="d-flex align-items-center gap-2">
+    <h5 class="mb-0">About Us Management</h5>
+    <span class="badge bg-<%= about.status === 'published' ? 'success' : 'warning' %>">
+      <%= about.status %>
+    </span>
+  </div>
+  <div class="d-flex gap-2">
+    <button class="btn btn-primary btn-sm" type="button" onclick="saveAbout()">
+      <i class="bi bi-save me-1"></i><span class="d-none d-sm-inline">Save</span>
+    </button>
+    <button class="btn btn-success btn-sm" type="button" onclick="publishAbout()">
+      <i class="bi bi-globe me-1"></i><span class="d-none d-sm-inline">Publish</span>
+    </button>
+  </div>
+</div>
+
+<form id="aboutForm">
+  <!-- Nav Tabs -->
+  <ul class="nav nav-tabs mb-3" role="tablist">
+    <li class="nav-item">
+      <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#introTab" type="button">Intro</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#featuresTab" type="button">Features</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#quoteTab" type="button">Quote</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#varietyTab" type="button">Variety</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#howItWorksTab" type="button">How It Works</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#categoriesTab" type="button">Categories</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#subscribeTab" type="button">Subscribe</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#seoTabAbout" type="button">SEO</button>
+    </li>
+  </ul>
+
+  <!-- Tab Content -->
+  <div class="tab-content">
+    <!-- Intro Section -->
+    <div class="tab-pane fade show active" id="introTab">
+      <div class="card">
+        <div class="card-header d-flex align-items-center gap-2">
+          <i class="bi bi-info-circle"></i><span>Intro Section</span>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <div class="mb-3">
+                <label class="form-label small">Label</label>
+                <input type="text" class="form-control form-control-sm" id="introLabel"
+                  value="<%= about.intro?.label || '' %>">
+              </div>
+              <div class="mb-3">
+                <label class="form-label small">Title</label>
+                <input type="text" class="form-control form-control-sm" id="introTitle"
+                  value="<%= about.intro?.title || '' %>">
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="mb-3">
+                <label class="form-label small">Content</label>
+                <textarea class="form-control form-control-sm" id="introContent"
+                  rows="4"><%= about.intro?.content || '' %></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="tab-pane fade" id="featuresTab">
+      <div class="card">
+        <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+          <span><i class="bi bi-list-ol me-2"></i>Features</span>
+          <button type="button" class="btn btn-outline-primary btn-sm" onclick="addAboutFeature()">
+            <i class="bi bi-plus"></i> Add
+          </button>
+        </div>
+        <div class="card-body">
+          <div id="aboutFeaturesContainer" class="row g-3">
+            <% if (about.features && about.features.length> 0) { %>
+              <% about.features.forEach((feat, idx)=> { %>
+                <div class="col-12 col-md-6 col-lg-4 about-feature-row">
+                  <div class="card h-100">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-start mb-2">
+                        <input type="text" class="form-control form-control-sm feat-number"
+                          value="<%= feat.number || '' %>" placeholder="01" style="width:50px">
+                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeAboutFeature(this)">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </div>
+                      <div class="mb-2">
+                        <input type="text" class="form-control form-control-sm feat-title"
+                          value="<%= feat.title || '' %>" placeholder="Title">
+                      </div>
+                      <textarea class="form-control form-control-sm feat-content" rows="2"
+                        placeholder="Content"><%= feat.content || '' %></textarea>
+                    </div>
+                  </div>
+                </div>
+                <% }); %>
+                  <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quote Banner -->
+    <div class="tab-pane fade" id="quoteTab">
+      <div class="card">
+        <div class="card-header d-flex align-items-center gap-2">
+          <i class="bi bi-quote"></i><span>Quote Banner</span>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12 col-lg-8">
+              <div class="mb-3">
+                <label class="form-label small">Quote Text</label>
+                <textarea class="form-control form-control-sm" id="quoteText"
+                  rows="3"><%= about.quoteBanner?.quoteText || '' %></textarea>
+              </div>
+              <div class="row g-2">
+                <div class="col-12 col-md-6">
+                  <label class="form-label small">Author</label>
+                  <input type="text" class="form-control form-control-sm" id="quoteAuthor"
+                    value="<%= about.quoteBanner?.author || '' %>">
+                </div>
+                <div class="col-12 col-md-6">
+                  <label class="form-label small">Background Image</label>
+                  <div class="input-group input-group-sm">
+                    <input type="text" class="form-control" id="quoteBackgroundImage"
+                      value="<%= about.quoteBanner?.backgroundImage || '' %>">
+                    <button class="btn btn-outline-secondary" type="button"
+                      onclick="uploadImage('quoteBackgroundImage')">
+                      <i class="bi bi-upload"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-lg-4">
+              <label class="form-label small">Preview</label>
+              <div id="quoteBackgroundImage_preview" class="border rounded p-2 bg-dark text-white text-center"
+                style="min-height: 100px;">
+                <% if (about.quoteBanner?.backgroundImage) { %>
+                  <img src="<%= about.quoteBanner.backgroundImage %>" class="img-fluid rounded"
+                    style="max-height: 90px;">
+                  <% } else { %>
+                    <span class="text-muted small">No image</span>
+                    <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Variety of Options -->
+    <div class="tab-pane fade" id="varietyTab">
+      <div class="card">
+        <div class="card-header d-flex align-items-center gap-2">
+          <i class="bi bi-grid"></i><span>Variety of Options</span>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <div class="mb-3">
+                <label class="form-label small">Label</label>
+                <input type="text" class="form-control form-control-sm" id="varietyLabel"
+                  value="<%= about.variety?.label || '' %>">
+              </div>
+              <div class="mb-3">
+                <label class="form-label small">Title</label>
+                <input type="text" class="form-control form-control-sm" id="varietyTitle"
+                  value="<%= about.variety?.title || '' %>">
+              </div>
+              <div class="mb-3">
+                <label class="form-label small">Content</label>
+                <textarea class="form-control form-control-sm" id="varietyContent"
+                  rows="3"><%= about.variety?.content || '' %></textarea>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="row g-2 mb-3">
+                <div class="col-6">
+                  <label class="form-label small">CTA Text</label>
+                  <input type="text" class="form-control form-control-sm" id="varietyCtaText"
+                    value="<%= about.variety?.ctaButton?.text || '' %>">
+                </div>
+                <div class="col-6">
+                  <label class="form-label small">CTA Link</label>
+                  <input type="text" class="form-control form-control-sm" id="varietyCtaLink"
+                    value="<%= about.variety?.ctaButton?.link || '' %>">
+                </div>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small">Images</label>
+                <div class="d-flex gap-2 mb-2">
+                  <button type="button" class="btn btn-outline-primary btn-sm"
+                    onclick="uploadMultipleImages('varietyImages')">
+                    <i class="bi bi-upload me-1"></i>Upload Images
+                  </button>
+                  <small class="text-muted align-self-center">Max 10 images, 5MB each</small>
+                </div>
+                <div id="varietyImages_gallery" class="d-flex flex-wrap gap-2">
+                  <% (about.variety?.images || []).forEach((img, idx)=> { %>
+                    <div class="position-relative variety-image-item" data-url="<%= img %>">
+                      <img src="<%= img %>" class="rounded" style="width: 80px; height: 80px; object-fit: cover;">
+                      <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 p-0"
+                        style="width: 20px; height: 20px; font-size: 10px;"
+                        onclick="removeGalleryImage(this, 'varietyImages')">
+                        <i class="bi bi-x"></i>
+                      </button>
+                    </div>
+                    <% }); %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- How It Works -->
+    <div class="tab-pane fade" id="howItWorksTab">
+      <div class="card">
+        <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+          <span><i class="bi bi-gear me-2"></i>How It Works</span>
+          <button type="button" class="btn btn-outline-primary btn-sm" onclick="addStep()">
+            <i class="bi bi-plus"></i> Add Step
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="row g-3 mb-3">
+            <div class="col-6 col-md-4">
+              <label class="form-label small">Label</label>
+              <input type="text" class="form-control form-control-sm" id="howItWorksLabel"
+                value="<%= about.howItWorks?.label || '' %>">
+            </div>
+            <div class="col-6 col-md-4">
+              <label class="form-label small">Title</label>
+              <input type="text" class="form-control form-control-sm" id="howItWorksTitle"
+                value="<%= about.howItWorks?.title || '' %>">
+            </div>
+            <div class="col-12 col-md-4">
+              <label class="form-label small">Image URL</label>
+              <div class="input-group input-group-sm">
+                <input type="text" class="form-control" id="howItWorksImage"
+                  value="<%= about.howItWorks?.image || '' %>">
+                <button class="btn btn-outline-secondary" type="button" onclick="uploadImage('howItWorksImage')">
+                  <i class="bi bi-upload"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <h6 class="small mb-2">Steps</h6>
+          <div id="stepsContainer" class="row g-3">
+            <% if (about.howItWorks?.steps && about.howItWorks.steps.length> 0) { %>
+              <% about.howItWorks.steps.forEach((step, idx)=> { %>
+                <div class="col-12 col-md-6 col-lg-4 step-row">
+                  <div class="card h-100">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div class="flex-grow-1 me-2">
+                          <div class="icon-field">
+                            <div class="input-group input-group-sm">
+                              <span class="input-group-text">Icon</span>
+                              <input type="text" class="form-control step-icon" value="<%= step.icon || '' %>"
+                                placeholder="bi bi-circle" oninput="updateIconPreview(this)">
+                              <span class="input-group-text">
+                                <i class="icon-preview bi bi-circle" aria-hidden="true"></i>
+                              </span>
+                            </div>
+                            <div class="mt-1 d-flex flex-wrap gap-1">
+                              <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2"
+                                title="bi bi-search" onclick="setIcon(this, 'bi bi-search')">
+                                <i class="bi bi-search"></i>
+                              </button>
+                              <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2"
+                                title="bi bi-pencil-square" onclick="setIcon(this, 'bi bi-pencil-square')">
+                                <i class="bi bi-pencil-square"></i>
+                              </button>
+                              <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2"
+                                title="bi bi-calendar-check" onclick="setIcon(this, 'bi bi-calendar-check')">
+                                <i class="bi bi-calendar-check"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeStep(this)"><i
+                            class="bi bi-trash"></i></button>
+                      </div>
+                      <div class="mb-2">
+                        <input type="text" class="form-control form-control-sm step-title"
+                          value="<%= step.title || '' %>" placeholder="Title">
+                      </div>
+                      <textarea class="form-control form-control-sm step-desc" rows="2"
+                        placeholder="Description"><%= step.description || '' %></textarea>
+                    </div>
+                  </div>
+                </div>
+                <% }); %>
+                  <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="tab-pane fade" id="categoriesTab">
+      <div class="card">
+        <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+          <span><i class="bi bi-bookmark me-2"></i>Categories</span>
+          <button type="button" class="btn btn-outline-primary btn-sm" onclick="addCategoryFeature()">
+            <i class="bi bi-plus"></i> Add
+          </button>
+        </div>
+        <div class="card-body">
+          <div id="categoryFeaturesContainer" class="row g-3 mb-3">
+            <% if (about.categories?.features && about.categories.features.length> 0) { %>
+              <% about.categories.features.forEach((feat, idx)=> { %>
+                <div class="col-12 col-md-6 col-lg-4 cat-feat-row">
+                  <div class="card h-100">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div class="flex-grow-1 me-2">
+                          <div class="icon-field">
+                            <div class="input-group input-group-sm">
+                              <span class="input-group-text">Icon</span>
+                              <input type="text" class="form-control cat-icon" value="<%= feat.icon || '' %>"
+                                placeholder="bi bi-star" oninput="updateIconPreview(this)">
+                              <span class="input-group-text">
+                                <i class="icon-preview bi bi-star" aria-hidden="true"></i>
+                              </span>
+                            </div>
+                            <div class="mt-1 d-flex flex-wrap gap-1">
+                              <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2"
+                                title="bi bi-award" onclick="setIcon(this, 'bi bi-award')">
+                                <i class="bi bi-award"></i>
+                              </button>
+                              <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2"
+                                title="bi bi-file-text" onclick="setIcon(this, 'bi bi-file-text')">
+                                <i class="bi bi-file-text"></i>
+                              </button>
+                              <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2"
+                                title="bi bi-mortarboard" onclick="setIcon(this, 'bi bi-mortarboard')">
+                                <i class="bi bi-mortarboard"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <button type="button" class="btn btn-outline-danger btn-sm"
+                          onclick="removeCategoryFeature(this)"><i class="bi bi-trash"></i></button>
+                      </div>
+                      <div class="mb-2">
+                        <input type="text" class="form-control form-control-sm cat-title"
+                          value="<%= feat.title || '' %>" placeholder="Title">
+                      </div>
+                      <textarea class="form-control form-control-sm cat-desc" rows="2"
+                        placeholder="Description"><%= feat.description || '' %></textarea>
+                    </div>
+                  </div>
+                </div>
+                <% }); %>
+                  <% } %>
+          </div>
+          <hr>
+          <div class="mb-3">
+            <label class="form-label small">Category Images</label>
+            <div class="d-flex gap-2 mb-2">
+              <button type="button" class="btn btn-outline-primary btn-sm"
+                onclick="uploadMultipleImages('categoryImages')">
+                <i class="bi bi-upload me-1"></i>Upload Images
+              </button>
+              <small class="text-muted align-self-center">Max 10 images, 5MB each</small>
+            </div>
+            <div id="categoryImages_gallery" class="d-flex flex-wrap gap-2">
+              <% (about.categories?.images || []).forEach((img, idx)=> { %>
+                <div class="position-relative category-image-item" data-url="<%= img %>">
+                  <img src="<%= img %>" class="rounded" style="width: 80px; height: 80px; object-fit: cover;">
+                  <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 p-0"
+                    style="width: 20px; height: 20px; font-size: 10px;"
+                    onclick="removeGalleryImage(this, 'categoryImages')">
+                    <i class="bi bi-x"></i>
+                  </button>
+                </div>
+                <% }); %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subscribe -->
+    <div class="tab-pane fade" id="subscribeTab">
+      <div class="card">
+        <div class="card-header d-flex align-items-center gap-2">
+          <i class="bi bi-envelope-open"></i><span>Subscribe Section</span>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <div class="mb-3">
+                <label class="form-label small">Title</label>
+                <input type="text" class="form-control form-control-sm" id="subscribeTitle"
+                  value="<%= about.subscribe?.title || '' %>">
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="mb-3">
+                <label class="form-label small">Description</label>
+                <textarea class="form-control form-control-sm" id="subscribeDescription"
+                  rows="2"><%= about.subscribe?.description || '' %></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO -->
+    <div class="tab-pane fade" id="seoTabAbout">
+      <div class="card">
+        <div class="card-header d-flex align-items-center gap-2">
+          <i class="bi bi-search"></i><span>SEO Settings</span>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <div class="mb-3">
+                <label class="form-label small">Meta Title</label>
+                <input type="text" class="form-control form-control-sm" id="aboutSeoMetaTitle"
+                  value="<%= about.seo?.metaTitle || '' %>">
+              </div>
+              <div class="mb-3">
+                <label class="form-label small">Meta Description</label>
+                <textarea class="form-control form-control-sm" id="aboutSeoMetaDescription"
+                  rows="2"><%= about.seo?.metaDescription || '' %></textarea>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="mb-3">
+                <label class="form-label small">Meta Keywords</label>
+                <input type="text" class="form-control form-control-sm" id="aboutSeoMetaKeywords"
+                  value="<%= about.seo?.metaKeywords || '' %>">
+              </div>
+              <div class="mb-3">
+                <label class="form-label small">OG Image URL</label>
+                <div class="input-group input-group-sm">
+                  <input type="text" class="form-control" id="aboutSeoOgImage" value="<%= about.seo?.ogImage || '' %>">
+                  <button class="btn btn-outline-secondary" type="button" onclick="uploadImage('aboutSeoOgImage')">
+                    <i class="bi bi-upload"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<script>
+
+  function collectAboutData() {
+    const features = [];
+    document.querySelectorAll('.about-feature-row').forEach(row => {
+      const number = row.querySelector('.feat-number').value.trim();
+      const title = row.querySelector('.feat-title').value.trim();
+      const content = row.querySelector('.feat-content').value.trim();
+      if (title) features.push({ number, title, content });
+    });
+
+    const steps = [];
+    document.querySelectorAll('.step-row').forEach(row => {
+      const icon = row.querySelector('.step-icon').value.trim();
+      const title = row.querySelector('.step-title').value.trim();
+      const description = row.querySelector('.step-desc').value.trim();
+      if (title) steps.push({ icon, title, description });
+    });
+
+    const catFeatures = [];
+    document.querySelectorAll('.cat-feat-row').forEach(row => {
+      const icon = row.querySelector('.cat-icon').value.trim();
+      const title = row.querySelector('.cat-title').value.trim();
+      const description = row.querySelector('.cat-desc').value.trim();
+      if (title) catFeatures.push({ icon, title, description });
+    });
+
+    // Collect images from gallery
+    const varietyImages = [];
+    document.querySelectorAll('.variety-image-item').forEach(item => {
+      const url = item.getAttribute('data-url');
+      if (url) varietyImages.push(url);
+    });
+
+    const categoryImages = [];
+    document.querySelectorAll('.category-image-item').forEach(item => {
+      const url = item.getAttribute('data-url');
+      if (url) categoryImages.push(url);
+    });
+
+    return {
+      intro: { label: $('#introLabel').val(), title: $('#introTitle').val(), content: $('#introContent').val() },
+      features: features,
+      quoteBanner: { quoteText: $('#quoteText').val(), author: $('#quoteAuthor').val(), backgroundImage: $('#quoteBackgroundImage').val() },
+      variety: {
+        label: $('#varietyLabel').val(), title: $('#varietyTitle').val(), content: $('#varietyContent').val(),
+        images: varietyImages, ctaButton: { text: $('#varietyCtaText').val(), link: $('#varietyCtaLink').val() }
+      },
+      howItWorks: { label: $('#howItWorksLabel').val(), title: $('#howItWorksTitle').val(), image: $('#howItWorksImage').val(), steps: steps },
+      categories: { features: catFeatures, images: categoryImages },
+      subscribe: { title: $('#subscribeTitle').val(), description: $('#subscribeDescription').val() },
+      seo: { metaTitle: $('#aboutSeoMetaTitle').val(), metaDescription: $('#aboutSeoMetaDescription').val(), metaKeywords: $('#aboutSeoMetaKeywords').val(), ogImage: $('#aboutSeoOgImage').val() }
+    };
+  }
+
+  function saveAbout() {
+    $.ajax({
+      url: '/admin/about/update', method: 'POST', contentType: 'application/json',
+      data: JSON.stringify(collectAboutData()),
+      success: (resp) => { alert(resp.message || 'Saved!'); location.reload(); },
+      error: (xhr) => alert(xhr.responseJSON?.message || 'Save failed')
+    });
+  }
+
+  function publishAbout() {
+    $.post('/admin/about/publish')
+      .done((resp) => { alert(resp.message || 'Published!'); location.reload(); })
+      .fail((xhr) => alert(xhr.responseJSON?.message || 'Publish failed'));
+  }
+
+  function updateIconPreview(input) {
+    if (!input) return;
+
+    const fallback = input.classList.contains('cat-icon') ? 'bi bi-star' : 'bi bi-circle';
+    const raw = String(input.value || '').trim();
+
+    const classes = raw ? raw.split(/\s+/).filter(Boolean) : [];
+    const hasIconName = classes.some((c) => c.startsWith('bi-'));
+    const previewClass = hasIconName ? Array.from(new Set(['bi', ...classes])).join(' ') : fallback;
+
+    const wrap = input.closest('.icon-field') || input.parentElement;
+    const previewEl = wrap ? wrap.querySelector('.icon-preview') : null;
+    if (previewEl) previewEl.className = `icon-preview ${previewClass}`;
+  }
+
+  function setIcon(btn, iconClass) {
+    const wrap = btn ? btn.closest('.icon-field') : null;
+    const input = wrap ? wrap.querySelector('input') : null;
+    if (!input) return;
+
+    input.value = iconClass;
+    updateIconPreview(input);
+    input.focus();
+  }
+
+  function addAboutFeature() {
+    const html = `
+    <div class="col-12 col-md-6 col-lg-4 about-feature-row">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <input type="text" class="form-control form-control-sm feat-number" placeholder="01" style="width:50px">
+            <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeAboutFeature(this)"><i class="bi bi-trash"></i></button>
+          </div>
+          <div class="mb-2"><input type="text" class="form-control form-control-sm feat-title" placeholder="Title"></div>
+          <textarea class="form-control form-control-sm feat-content" rows="2" placeholder="Content"></textarea>
+        </div>
+      </div>
+    </div>`;
+    $('#aboutFeaturesContainer').append(html);
+  }
+  function removeAboutFeature(btn) { $(btn).closest('.about-feature-row').remove(); }
+
+  function addStep() {
+    const html = `
+    <div class="col-12 col-md-6 col-lg-4 step-row">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <div class="flex-grow-1 me-2">
+              <div class="icon-field">
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text">Icon</span>
+                  <input type="text" class="form-control step-icon" placeholder="bi bi-circle" oninput="updateIconPreview(this)">
+                  <span class="input-group-text"><i class="icon-preview bi bi-circle" aria-hidden="true"></i></span>
+                </div>
+                <div class="mt-1 d-flex flex-wrap gap-1">
+                  <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2" title="bi bi-search" onclick="setIcon(this, 'bi bi-search')"><i class="bi bi-search"></i></button>
+                  <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2" title="bi bi-pencil-square" onclick="setIcon(this, 'bi bi-pencil-square')"><i class="bi bi-pencil-square"></i></button>
+                  <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2" title="bi bi-calendar-check" onclick="setIcon(this, 'bi bi-calendar-check')"><i class="bi bi-calendar-check"></i></button>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeStep(this)"><i class="bi bi-trash"></i></button>
+          </div>
+          <div class="mb-2"><input type="text" class="form-control form-control-sm step-title" placeholder="Title"></div>
+          <textarea class="form-control form-control-sm step-desc" rows="2" placeholder="Description"></textarea>
+        </div>
+      </div>
+    </div>`;
+    $('#stepsContainer').append(html);
+  }
+  function removeStep(btn) { $(btn).closest('.step-row').remove(); }
+
+  function addCategoryFeature() {
+    const html = `
+    <div class="col-12 col-md-6 col-lg-4 cat-feat-row">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <div class="flex-grow-1 me-2">
+              <div class="icon-field">
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text">Icon</span>
+                  <input type="text" class="form-control cat-icon" placeholder="bi bi-star" oninput="updateIconPreview(this)">
+                  <span class="input-group-text"><i class="icon-preview bi bi-star" aria-hidden="true"></i></span>
+                </div>
+                <div class="mt-1 d-flex flex-wrap gap-1">
+                  <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2" title="bi bi-award" onclick="setIcon(this, 'bi bi-award')"><i class="bi bi-award"></i></button>
+                  <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2" title="bi bi-file-text" onclick="setIcon(this, 'bi bi-file-text')"><i class="bi bi-file-text"></i></button>
+                  <button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2" title="bi bi-mortarboard" onclick="setIcon(this, 'bi bi-mortarboard')"><i class="bi bi-mortarboard"></i></button>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeCategoryFeature(this)"><i class="bi bi-trash"></i></button>
+          </div>
+          <div class="mb-2"><input type="text" class="form-control form-control-sm cat-title" placeholder="Title"></div>
+          <textarea class="form-control form-control-sm cat-desc" rows="2" placeholder="Description"></textarea>
+        </div>
+      </div>
+    </div>`;
+    $('#categoryFeaturesContainer').append(html);
+  }
+  function removeCategoryFeature(btn) { $(btn).closest('.cat-feat-row').remove(); }
+
+  // init previews for existing rows
+  document.querySelectorAll('.step-icon, .cat-icon').forEach((input) => updateIconPreview(input));
+
+  // Multiple image upload
+  window.currentMultiUploadTarget = null;
+
+  function uploadMultipleImages(galleryId) {
+    window.currentMultiUploadTarget = galleryId;
+    // Create a hidden file input for multiple files
+    let input = document.getElementById('multiImageUploadInput');
+    if (!input) {
+      input = document.createElement('input');
+      input.type = 'file';
+      input.id = 'multiImageUploadInput';
+      input.accept = 'image/*';
+      input.multiple = true;
+      input.style.display = 'none';
+      document.body.appendChild(input);
+
+      input.addEventListener('change', function () {
+        const files = this.files;
+        if (!files || files.length === 0) return;
+
+        const formData = new FormData();
+        for (let i = 0; i < files.length; i++) {
+          formData.append('images', files[i]);
+        }
+
+        const targetId = window.currentMultiUploadTarget;
+
+        $.ajax({
+          url: '/upload/images',
+          method: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function (resp) {
+            if (resp.success && resp.files) {
+              const gallery = document.getElementById(targetId + '_gallery');
+              const itemClass = targetId === 'varietyImages' ? 'variety-image-item' : 'category-image-item';
+
+              resp.files.forEach(file => {
+                const div = document.createElement('div');
+                div.className = 'position-relative ' + itemClass;
+                div.setAttribute('data-url', file.url);
+                div.innerHTML = `
+                  <img src="${file.url}" class="rounded" style="width: 80px; height: 80px; object-fit: cover;">
+                  <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 p-0" 
+                    style="width: 20px; height: 20px; font-size: 10px;" onclick="removeGalleryImage(this, '${targetId}')">
+                    <i class="bi bi-x"></i>
+                  </button>
+                `;
+                gallery.appendChild(div);
+              });
+
+              alert('Upload thành công ' + resp.files.length + ' ảnh!');
+            } else {
+              alert('Upload failed: ' + (resp.message || 'Unknown error'));
+            }
+          },
+          error: function (xhr) {
+            alert(xhr.responseJSON?.message || 'Upload failed');
+          }
+        });
+
+        this.value = ''; // Reset
+      });
+    }
+    input.click();
+  }
+
+  function removeGalleryImage(btn, galleryId) {
+    $(btn).closest('[data-url]').remove();
+  }
+</script>

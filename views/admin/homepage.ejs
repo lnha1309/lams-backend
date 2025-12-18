@@ -1,0 +1,507 @@
+<!-- Page Header -->
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+  <div class="d-flex align-items-center gap-2">
+    <h5 class="mb-0">Homepage Management</h5>
+    <span class="badge bg-<%= homepage.status === 'published' ? 'success' : 'warning' %>">
+      <%= homepage.status %>
+    </span>
+  </div>
+  <div class="d-flex gap-2">
+    <button class="btn btn-primary btn-sm" type="button" onclick="saveHomepage()">
+      <i class="bi bi-save me-1"></i><span class="d-none d-sm-inline">Save</span>
+    </button>
+    <button class="btn btn-success btn-sm" type="button" onclick="publishHomepage()">
+      <i class="bi bi-globe me-1"></i><span class="d-none d-sm-inline">Publish</span>
+    </button>
+  </div>
+</div>
+
+<form id="homepageForm">
+  <!-- Nav Tabs - Scrollable on mobile -->
+  <ul class="nav nav-tabs mb-3" role="tablist">
+    <li class="nav-item">
+      <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#heroTab" type="button">Hero</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#vmpTab" type="button">Vision/Mission</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#whoWeAreTab" type="button">Who We Are</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#whyChooseTab" type="button">Why Choose</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#accreditationTab"
+        type="button">Accreditation</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#newsTab" type="button">Featured News</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#seoTab" type="button">SEO</button>
+    </li>
+  </ul>
+
+  <!-- Tab Content -->
+  <div class="tab-content">
+    <!-- Hero Section -->
+    <div class="tab-pane fade show active" id="heroTab">
+      <div class="card">
+        <div class="card-header d-flex align-items-center gap-2">
+          <i class="bi bi-image"></i><span>Hero Section</span>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12 col-lg-8">
+              <div class="mb-3">
+                <label class="form-label small">Title <span class="text-danger">*</span></label>
+                <input type="text" class="form-control form-control-sm" id="heroTitle"
+                  value="<%= homepage.hero?.title || '' %>" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small">Subtitle</label>
+                <textarea class="form-control form-control-sm" id="heroSubtitle"
+                  rows="3"><%= homepage.hero?.subtitle || '' %></textarea>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small">Background Image URL</label>
+                <div class="input-group input-group-sm">
+                  <input type="text" class="form-control" id="heroBackgroundImage"
+                    value="<%= homepage.hero?.backgroundImage || '' %>">
+                  <button class="btn btn-outline-secondary" type="button" onclick="uploadImage('heroBackgroundImage')">
+                    <i class="bi bi-upload"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-lg-4">
+              <label class="form-label small">Preview</label>
+              <div id="heroBackgroundImage_preview" class="border rounded p-2 bg-light text-center"
+                style="min-height: 120px;">
+                <% if (homepage.hero?.backgroundImage) { %>
+                  <img src="<%= homepage.hero.backgroundImage %>" class="img-fluid rounded" style="max-height: 110px;">
+                  <% } else { %>
+                    <span class="text-muted small">No image</span>
+                    <% } %>
+              </div>
+            </div>
+          </div>
+
+          <!-- CTA Buttons -->
+          <hr>
+          <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+            <h6 class="mb-0 small"><i class="bi bi-cursor me-2"></i>CTA Buttons</h6>
+            <button type="button" class="btn btn-outline-primary btn-sm" onclick="addCTA()">
+              <i class="bi bi-plus"></i> Add
+            </button>
+          </div>
+          <div id="ctaButtonsContainer">
+            <% if (homepage.hero?.ctaButtons && homepage.hero.ctaButtons.length> 0) { %>
+              <% homepage.hero.ctaButtons.forEach((btn, idx)=> { %>
+                <div class="row g-2 mb-2 cta-row">
+                  <div class="col-6 col-md-4">
+                    <input type="text" class="form-control form-control-sm cta-text" placeholder="Text"
+                      value="<%= btn.text %>">
+                  </div>
+                  <div class="col-6 col-md-4">
+                    <input type="text" class="form-control form-control-sm cta-link" placeholder="Link"
+                      value="<%= btn.link %>">
+                  </div>
+                  <div class="col-10 col-md-3">
+                    <select class="form-select form-select-sm cta-type">
+                      <option value="primary" <%=btn.type==='primary' ? 'selected' : '' %>>Primary</option>
+                      <option value="secondary" <%=btn.type==='secondary' ? 'selected' : '' %>>Secondary</option>
+                    </select>
+                  </div>
+                  <div class="col-2 col-md-1">
+                    <button type="button" class="btn btn-outline-danger btn-sm w-100" onclick="removeCTA(this)"><i
+                        class="bi bi-trash"></i></button>
+                  </div>
+                </div>
+                <% }); %>
+                  <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vision/Mission/Philosophy -->
+    <div class="tab-pane fade" id="vmpTab">
+      <div class="row g-3">
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card h-100">
+            <div class="card-header d-flex align-items-center gap-2">
+              <i class="bi bi-eye"></i><span>Vision</span>
+            </div>
+            <div class="card-body">
+              <div class="mb-3">
+                <label class="form-label small">Title</label>
+                <input type="text" class="form-control form-control-sm" id="visionTitle"
+                  value="<%= homepage.vmp?.vision?.title || '' %>">
+              </div>
+              <div class="mb-3">
+                <label class="form-label small">Content</label>
+                <textarea class="form-control form-control-sm" id="visionContent"
+                  rows="4"><%= homepage.vmp?.vision?.content || '' %></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card h-100">
+            <div class="card-header d-flex align-items-center gap-2">
+              <i class="bi bi-bullseye"></i><span>Mission</span>
+            </div>
+            <div class="card-body">
+              <div class="mb-3">
+                <label class="form-label small">Title</label>
+                <input type="text" class="form-control form-control-sm" id="missionTitle"
+                  value="<%= homepage.vmp?.mission?.title || '' %>">
+              </div>
+              <div class="mb-3">
+                <label class="form-label small">Content</label>
+                <textarea class="form-control form-control-sm" id="missionContent"
+                  rows="4"><%= homepage.vmp?.mission?.content || '' %></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="card h-100">
+            <div class="card-header d-flex align-items-center gap-2">
+              <i class="bi bi-lightbulb"></i><span>Philosophy</span>
+            </div>
+            <div class="card-body">
+              <div class="mb-3">
+                <label class="form-label small">Title</label>
+                <input type="text" class="form-control form-control-sm" id="philosophyTitle"
+                  value="<%= homepage.vmp?.philosophy?.title || '' %>">
+              </div>
+              <div class="mb-3">
+                <label class="form-label small">Content</label>
+                <textarea class="form-control form-control-sm" id="philosophyContent"
+                  rows="4"><%= homepage.vmp?.philosophy?.content || '' %></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Who We Are -->
+    <div class="tab-pane fade" id="whoWeAreTab">
+      <div class="card">
+        <div class="card-header d-flex align-items-center gap-2">
+          <i class="bi bi-people"></i><span>Who We Are</span>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="form-label small">Title</label>
+            <input type="text" class="form-control form-control-sm" id="whoWeAreTitle"
+              value="<%= homepage.whoWeAre?.title || '' %>">
+          </div>
+          <div class="mb-3">
+            <label class="form-label small">Content</label>
+            <textarea class="form-control form-control-sm" id="whoWeAreContent"
+              rows="5"><%= homepage.whoWeAre?.content || '' %></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Why Choose LAMS -->
+    <div class="tab-pane fade" id="whyChooseTab">
+      <div class="card">
+        <div class="card-header d-flex align-items-center gap-2">
+          <i class="bi bi-star"></i><span>Why Choose LAMS</span>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12 col-lg-8">
+              <div class="mb-3">
+                <label class="form-label small">Title</label>
+                <input type="text" class="form-control form-control-sm" id="whyChooseTitle"
+                  value="<%= homepage.whyChoose?.title || '' %>">
+              </div>
+              <div class="mb-3">
+                <label class="form-label small">Content</label>
+                <textarea class="form-control form-control-sm" id="whyChooseContent"
+                  rows="3"><%= homepage.whyChoose?.content || '' %></textarea>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small">Image URL</label>
+                <div class="input-group input-group-sm">
+                  <input type="text" class="form-control" id="whyChooseImage"
+                    value="<%= homepage.whyChoose?.image || '' %>">
+                  <button class="btn btn-outline-secondary" type="button" onclick="uploadImage('whyChooseImage')">
+                    <i class="bi bi-upload"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-lg-4">
+              <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                <label class="form-label small mb-0">Features</label>
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="addFeature()">
+                  <i class="bi bi-plus"></i>
+                </button>
+              </div>
+              <div id="featuresContainer">
+                <% if (homepage.whyChoose?.features && homepage.whyChoose.features.length> 0) { %>
+                  <% homepage.whyChoose.features.forEach((feature, idx)=> { %>
+                    <div class="input-group input-group-sm mb-2 feature-row">
+                      <input type="text" class="form-control feature-input" value="<%= feature %>">
+                      <button class="btn btn-outline-danger" type="button" onclick="removeFeature(this)"><i
+                          class="bi bi-x"></i></button>
+                    </div>
+                    <% }); %>
+                      <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accreditation -->
+    <div class="tab-pane fade" id="accreditationTab">
+      <div class="card">
+        <div class="card-header d-flex align-items-center gap-2">
+          <i class="bi bi-award"></i><span>Accreditation</span>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12 col-lg-8">
+              <div class="mb-3">
+                <label class="form-label small">Title</label>
+                <input type="text" class="form-control form-control-sm" id="accreditationTitle"
+                  value="<%= homepage.accreditation?.title || '' %>">
+              </div>
+              <div class="mb-3">
+                <label class="form-label small">Content</label>
+                <textarea class="form-control form-control-sm" id="accreditationContent"
+                  rows="3"><%= homepage.accreditation?.content || '' %></textarea>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small">Image URL</label>
+                <div class="input-group input-group-sm">
+                  <input type="text" class="form-control" id="accreditationImage"
+                    value="<%= homepage.accreditation?.image || '' %>">
+                  <button class="btn btn-outline-secondary" type="button" onclick="uploadImage('accreditationImage')">
+                    <i class="bi bi-upload"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-lg-4">
+              <label class="form-label small">Statistics</label>
+              <div class="row g-2">
+                <div class="col-6">
+                  <label class="form-label small text-muted">International (%)</label>
+                  <input type="number" class="form-control form-control-sm" id="statsInternational"
+                    value="<%= homepage.accreditation?.stats?.internationalLearners || 0 %>" min="0" max="100">
+                </div>
+                <div class="col-6">
+                  <label class="form-label small text-muted">Tuition Savings (%)</label>
+                  <input type="number" class="form-control form-control-sm" id="statsTuition"
+                    value="<%= homepage.accreditation?.stats?.averageTuitionSavings || 0 %>" min="0" max="100">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Featured News -->
+    <div class="tab-pane fade" id="newsTab">
+      <div class="card">
+        <div class="card-header d-flex align-items-center gap-2">
+          <i class="bi bi-newspaper"></i><span>Featured News</span>
+        </div>
+        <div class="card-body">
+          <p class="text-muted small mb-3">Select up to 3 news items to feature on the homepage.</p>
+          <div id="featuredNewsContainer" class="row g-2">
+            <% const featuredIds=(homepage.featuredNews || []).map(n=> n._id ? n._id.toString() : n.toString());
+              %>
+              <% if (typeof newsList !=='undefined' && newsList.length> 0) { %>
+                <% newsList.forEach(news=> { %>
+                  <div class="col-12 col-md-6 col-lg-4">
+                    <div class="form-check border rounded p-2">
+                      <input class="form-check-input featured-news-check" type="checkbox" value="<%= news._id %>"
+                        id="news_<%= news._id %>" <%=featuredIds.includes(news._id.toString()) ? 'checked' : '' %>>
+                      <label class="form-check-label small" for="news_<%= news._id %>">
+                        <strong>
+                          <%= news.title %>
+                        </strong>
+                        <span class="badge bg-secondary ms-1">
+                          <%= news.category %>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                  <% }); %>
+                    <% } else { %>
+                      <div class="col-12">
+                        <p class="text-muted small">No news available. <a href="/admin/news/create">Create news
+                            first</a>.</p>
+                      </div>
+                      <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO -->
+    <div class="tab-pane fade" id="seoTab">
+      <div class="card">
+        <div class="card-header d-flex align-items-center gap-2">
+          <i class="bi bi-search"></i><span>SEO Settings</span>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <div class="mb-3">
+                <label class="form-label small">Meta Title</label>
+                <input type="text" class="form-control form-control-sm" id="seoMetaTitle"
+                  value="<%= homepage.seo?.metaTitle || '' %>">
+              </div>
+              <div class="mb-3">
+                <label class="form-label small">Meta Description</label>
+                <textarea class="form-control form-control-sm" id="seoMetaDescription"
+                  rows="3"><%= homepage.seo?.metaDescription || '' %></textarea>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="mb-3">
+                <label class="form-label small">Meta Keywords</label>
+                <input type="text" class="form-control form-control-sm" id="seoMetaKeywords"
+                  value="<%= homepage.seo?.metaKeywords || '' %>" placeholder="keyword1, keyword2">
+              </div>
+              <div class="mb-3">
+                <label class="form-label small">OG Image URL</label>
+                <div class="input-group input-group-sm">
+                  <input type="text" class="form-control" id="seoOgImage" value="<%= homepage.seo?.ogImage || '' %>">
+                  <button class="btn btn-outline-secondary" type="button" onclick="uploadImage('seoOgImage')">
+                    <i class="bi bi-upload"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<script>
+
+  function collectFormData() {
+    const ctaButtons = [];
+    document.querySelectorAll('.cta-row').forEach(row => {
+      const text = row.querySelector('.cta-text').value.trim();
+      const link = row.querySelector('.cta-link').value.trim();
+      const type = row.querySelector('.cta-type').value;
+      if (text && link) ctaButtons.push({ text, link, type });
+    });
+
+    const features = [];
+    document.querySelectorAll('.feature-input').forEach(input => {
+      const val = input.value.trim();
+      if (val) features.push(val);
+    });
+
+    const featuredNews = [];
+    document.querySelectorAll('.featured-news-check:checked').forEach(cb => {
+      featuredNews.push(cb.value);
+    });
+
+    return {
+      hero: {
+        title: $('#heroTitle').val(),
+        subtitle: $('#heroSubtitle').val(),
+        backgroundImage: $('#heroBackgroundImage').val(),
+        ctaButtons: ctaButtons
+      },
+      vmp: {
+        vision: { title: $('#visionTitle').val(), content: $('#visionContent').val() },
+        mission: { title: $('#missionTitle').val(), content: $('#missionContent').val() },
+        philosophy: { title: $('#philosophyTitle').val(), content: $('#philosophyContent').val() }
+      },
+      whoWeAre: { title: $('#whoWeAreTitle').val(), content: $('#whoWeAreContent').val() },
+      whyChoose: {
+        title: $('#whyChooseTitle').val(),
+        content: $('#whyChooseContent').val(),
+        image: $('#whyChooseImage').val(),
+        features: features
+      },
+      accreditation: {
+        title: $('#accreditationTitle').val(),
+        content: $('#accreditationContent').val(),
+        image: $('#accreditationImage').val(),
+        stats: {
+          internationalLearners: parseInt($('#statsInternational').val()) || 0,
+          averageTuitionSavings: parseInt($('#statsTuition').val()) || 0
+        }
+      },
+      featuredNews: featuredNews,
+      seo: {
+        metaTitle: $('#seoMetaTitle').val(),
+        metaDescription: $('#seoMetaDescription').val(),
+        metaKeywords: $('#seoMetaKeywords').val(),
+        ogImage: $('#seoOgImage').val()
+      }
+    };
+  }
+
+  function saveHomepage() {
+    const data = collectFormData();
+    if (!data.hero.title.trim()) { alert('Hero title is required'); return; }
+
+    $.ajax({
+      url: '/admin/homepage/update',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(data),
+      success: (resp) => { alert(resp.message || 'Saved!'); location.reload(); },
+      error: (xhr) => alert(xhr.responseJSON?.message || 'Save failed')
+    });
+  }
+
+  function publishHomepage() {
+    $.post('/admin/homepage/publish')
+      .done((resp) => { alert(resp.message || 'Published!'); location.reload(); })
+      .fail((xhr) => alert(xhr.responseJSON?.message || 'Publish failed'));
+  }
+
+  function addCTA() {
+    const html = `
+    <div class="row g-2 mb-2 cta-row">
+      <div class="col-6 col-md-4"><input type="text" class="form-control form-control-sm cta-text" placeholder="Text"></div>
+      <div class="col-6 col-md-4"><input type="text" class="form-control form-control-sm cta-link" placeholder="Link"></div>
+      <div class="col-10 col-md-3">
+        <select class="form-select form-select-sm cta-type">
+          <option value="primary">Primary</option>
+          <option value="secondary">Secondary</option>
+        </select>
+      </div>
+      <div class="col-2 col-md-1"><button type="button" class="btn btn-outline-danger btn-sm w-100" onclick="removeCTA(this)"><i class="bi bi-trash"></i></button></div>
+    </div>`;
+    $('#ctaButtonsContainer').append(html);
+  }
+
+  function removeCTA(btn) { $(btn).closest('.cta-row').remove(); }
+
+  function addFeature() {
+    const html = `
+    <div class="input-group input-group-sm mb-2 feature-row">
+      <input type="text" class="form-control feature-input" placeholder="Feature">
+      <button class="btn btn-outline-danger" type="button" onclick="removeFeature(this)"><i class="bi bi-x"></i></button>
+    </div>`;
+    $('#featuresContainer').append(html);
+  }
+
+  function removeFeature(btn) { $(btn).closest('.feature-row').remove(); }
+</script>
